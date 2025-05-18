@@ -8,7 +8,7 @@ const app = express();
 app.use(express.json());
 
 app.get("/", (req, res) => {
-  res.json({ message: "Cart service works 🎉" });
+  res.json({ message: "Cart service works" });
 });
 
 const PORT = process.env.PORT || 5000;

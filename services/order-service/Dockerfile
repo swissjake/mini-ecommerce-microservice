@@ -4,7 +4,7 @@ FROM node:18-alpine
 # Set working directory inside container
 WORKDIR /app
 
-# Copy only package files first (leverages Docker cache)
+# Copy only package 
 COPY package*.json ./
 
 # Install dependencies
@@ -14,9 +14,9 @@ RUN npm install
 COPY . .
 
 # Build TypeScript
-RUN npm run build
+RUN mkdir -p dist && npm run build
 
-# Expose the port the app runs on (optional unless used with Docker networking)
+# Expose the port 
 EXPOSE 5000
 
 # Start the app

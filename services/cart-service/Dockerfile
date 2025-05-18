@@ -14,7 +14,7 @@ RUN npm install
 COPY . .
 
 # Build TypeScript
-RUN npm run build
+RUN mkdir -p dist && npm run build
 
 # Expose the port the app runs on (optional unless used with Docker networking)
 EXPOSE 5000

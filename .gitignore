@@ -2,3 +2,7 @@
 .env
 node_modules
 *.log
+user-db/
+cart-db/
+order-db/
+payment-db/
