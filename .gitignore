@@ -6,4 +6,4 @@ user-db/
 cart-db/
 order-db/
 payment-db/
-request.rest
+*.rest
