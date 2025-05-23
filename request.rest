@@ -1,0 +1,23 @@
+@baseUrl = http://localhost:8080
+@contentType = application/json
+
+### Register User
+POST {{baseUrl}}/v1/users/register
+Content-Type: {{contentType}}
+User-Agent: PostmanRuntime/7.43.4
+Accept: */*
+Cache-Control: no-cache
+Host: localhost:8080
+Accept-Encoding: gzip, deflate, br
+Connection: keep-alive
+
+{
+    "email": "john.doe@example.com",
+    "password": "password123",
+    "fullName": "John Doe",
+    "phone": "1234567890",
+    "address": "123 Main St",
+    "city": "New York",
+    "state": "NY",
+    "zip": "10001"
+}

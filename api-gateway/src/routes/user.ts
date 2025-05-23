@@ -1,49 +1,22 @@
-import dotenv from "dotenv";
-import { Router, Request, Response } from "express";
-import { createProxyMiddleware, Options } from "http-proxy-middleware";
-import validateToken from "../middleware/validateToken";
-import { ClientRequest } from "http";
-import logger from "../utils/logger";
+// import { Router } from "express";
+// import { createProxyMiddleware } from "http-proxy-middleware";
+// import validateToken from "../middleware/validateToken";
+// import logger from "../utils/logger";
 
-dotenv.config();
+// const userRouter = Router();
+// const target = String(process.env.USER_SERVICE_URL);
 
-const userRouter = Router();
-const target = String(process.env.USER_SERVICE_URL);
+// logger.info("User router initialized with target:", { target });
 
-// Simple proxy for all user routes
-userRouter.use(
-  "/",
-  createProxyMiddleware({
-    target,
-    changeOrigin: true,
-  })
-);
+// const userProxy = createProxyMiddleware({
+//   target,
+//   changeOrigin: true,
+// });
 
-userRouter.use(
-  "/me",
-  validateToken,
-  createProxyMiddleware({
-    target,
-    changeOrigin: true,
-  })
-);
+// // Apply validateToken middleware to all routes
+// userRouter.use(validateToken);
 
-userRouter.use(
-  "/profile",
-  validateToken,
-  createProxyMiddleware({
-    target,
-    changeOrigin: true,
-  })
-);
+// // Apply proxy to all routes
+// userRouter.use("/", userProxy);
 
-userRouter.use(
-  "/account",
-  validateToken,
-  createProxyMiddleware({
-    target,
-    changeOrigin: true,
-  })
-);
-
-export default userRouter;
+// export default userRouter;

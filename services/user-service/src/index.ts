@@ -2,10 +2,13 @@ import express from "express";
 import dotenv from "dotenv";
 import logger from "./utils/logger";
 import { errorHandler } from "./middleware/errorHandler";
-import userRoutes from "./routes/user.routes";
+
 import cors from "cors";
+import authRoutes from "./routes/auth.routes";
+import userRoutes from "./routes/user.routes";
 
 dotenv.config();
+
 const app = express();
 
 app.use(express.json());
@@ -20,7 +23,8 @@ app.use(
   })
 );
 
-app.use("/", userRoutes);
+app.use("/api/auth", authRoutes);
+app.use("/api/users", userRoutes);
 
 app.use(errorHandler);
 

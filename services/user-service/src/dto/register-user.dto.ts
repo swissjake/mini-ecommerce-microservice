@@ -5,10 +5,10 @@ export const registerUserSchema = Joi.object({
   password: Joi.string().min(6).required(),
   fullName: Joi.string().required(),
   phone: Joi.string().required(),
-  address: Joi.string(),
-  city: Joi.string(),
-  state: Joi.string(),
-  zip: Joi.string(),
+  address: Joi.string().optional(),
+  city: Joi.string().optional(),
+  state: Joi.string().optional(),
+  zip: Joi.string().optional(),
 });
 
 export type RegisterUserDto = {

@@ -20,10 +20,10 @@ model User {
   password  String
   fullName  String
   phone     String
-  address   String
-  city      String
-  state     String
-  zip       String
+  address   String?
+  city      String?
+  state     String?
+  zip       String?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
