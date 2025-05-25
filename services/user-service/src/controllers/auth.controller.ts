@@ -73,7 +73,8 @@ export const loginUser = async (
     }
 
     const { accessToken, refreshToken } = await TokenService.createTokens(
-      user.id
+      user.id,
+      user.role
     );
 
     res.status(200).json({
@@ -109,7 +110,7 @@ export const refreshToken = async (
     await TokenService.revokeRefreshToken(user.id);
 
     const { accessToken, refreshToken: newRefreshToken } =
-      await TokenService.createTokens(user.id);
+      await TokenService.createTokens(user.id, user.role);
 
     res.status(200).json({
       success: true,

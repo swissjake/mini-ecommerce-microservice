@@ -40,16 +40,16 @@
 /**
  * @swagger
  * tags:
- *   name: Users
+ *   name: Auth
  *   description: User management endpoints
  */
 
 /**
  * @swagger
- * /v1/users/register:
+ * /v1/auth/register:
  *   post:
  *     summary: Register a new user
- *     tags: [Users]
+ *     tags: [Auth]
  *     requestBody:
  *       required: true
  *       content:
@@ -78,10 +78,10 @@
 
 /**
  * @swagger
- * /v1/users/login:
+ * /v1/auth/login:
  *   post:
  *     summary: Login user
- *     tags: [Users]
+ *     tags: [Auth]
  *     requestBody:
  *       required: true
  *       content:
@@ -95,9 +95,11 @@
  *               email:
  *                 type: string
  *                 format: email
+ *                 example: sofiriamgbara@gmail.com
  *               password:
  *                 type: string
  *                 format: password
+ *                 example: "@Root1234"
  *     responses:
  *       200:
  *         description: Login successful
@@ -108,14 +110,52 @@
  *               properties:
  *                 success:
  *                   type: boolean
+ *                   example: true
  *                 message:
  *                   type: string
+ *                   example: Login successful
  *                 token:
  *                   type: string
+ *                   example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
  *       401:
  *         description: Invalid credentials
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 message:
+ *                   type: string
+ *                   example: Invalid credentials
+ *       404:
+ *         description: User not found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 message:
+ *                   type: string
+ *                   example: User not found
  *       500:
  *         description: Server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 message:
+ *                   type: string
+ *                   example: Internal server error
  */
 
 /**

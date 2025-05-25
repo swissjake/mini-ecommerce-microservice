@@ -49,8 +49,8 @@ services:
       - ./services/order-service:/app
     depends_on:
       - order-db
-      - payment-service
-      - notification-service
+      # - payment-service
+      # - notification-service
 
   payment-service:
     build: ./services/payment-service
@@ -76,6 +76,18 @@ services:
     depends_on:
       - redis
 
+  product-service:
+    build: ./services/product-service
+    container_name: product-service
+    ports:
+      - "5006:5000"
+    env_file:
+      - ./services/product-service/.env
+    volumes:
+      - ./services/product-service:/app
+    depends_on:
+      - product-db
+
   # Databases for each service (isolated per service)
 
   user-db:
@@ -85,7 +97,7 @@ services:
     ports:
       - "5440:5432"
     volumes:
-      - ./user-db:/var/lib/postgresql/data
+      - ./postgres/user-db:/var/lib/postgresql/data
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: password
@@ -98,7 +110,7 @@ services:
     ports:
       - "5441:5432"
     volumes:
-      - ./cart-db:/var/lib/postgresql/data
+      - ./postgres/cart-db:/var/lib/postgresql/data
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: password
@@ -111,7 +123,7 @@ services:
     ports:
       - "5442:5432"
     volumes:
-      - ./order-db:/var/lib/postgresql/data
+      - ./postgres/order-db:/var/lib/postgresql/data
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: password
@@ -124,11 +136,24 @@ services:
     ports:
       - "5443:5432"
     volumes:
-      - ./payment-db:/var/lib/postgresql/data
+      - ./postgres/payment-db:/var/lib/postgresql/data
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: password
       POSTGRES_DB: payments
+
+  product-db:
+    image: postgres:15
+    container_name: product-db
+    restart: always
+    ports:
+      - "5444:5432"
+    volumes:
+      - ./postgres/product-db:/var/lib/postgresql/data
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: products
 
   redis:
     image: redis:7

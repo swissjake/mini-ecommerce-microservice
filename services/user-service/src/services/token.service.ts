@@ -9,7 +9,7 @@ class TokenService {
   private static readonly REFRESH_TOKEN_EXPIRY = process.env
     .REFRESH_TOKEN_EXPIRY as string;
 
-  private static generateTokens(userId: string) {
+  private static generateTokens(userId: string, role: string) {
     if (!this.ACCESS_TOKEN_EXPIRY || !this.REFRESH_TOKEN_EXPIRY) {
       throw new Error(
         "Token expiry times not configured in environment variables"
@@ -19,7 +19,11 @@ class TokenService {
     const options: SignOptions = {
       expiresIn: this.ACCESS_TOKEN_EXPIRY as jwt.SignOptions["expiresIn"],
     };
-    const accessToken = jwt.sign({ userId }, process.env.JWT_SECRET!, options);
+    const accessToken = jwt.sign(
+      { userId, role },
+      process.env.JWT_SECRET!,
+      options
+    );
 
     const refreshOptions: SignOptions = {
       expiresIn: this.REFRESH_TOKEN_EXPIRY as jwt.SignOptions["expiresIn"],
@@ -33,9 +37,9 @@ class TokenService {
     return { accessToken, refreshToken };
   }
 
-  public static async createTokens(userId: string) {
+  public static async createTokens(userId: string, role: string) {
     logger.info("Creating tokens for user:", userId);
-    const { accessToken, refreshToken } = this.generateTokens(userId);
+    const { accessToken, refreshToken } = this.generateTokens(userId, role);
 
     const hashRefreshToken = await bcrypt.hash(refreshToken, 10);
 
@@ -54,7 +58,10 @@ class TokenService {
   public static async verifyAccessToken(token: string) {
     try {
       logger.info("Verifying access token");
-      return jwt.verify(token, process.env.JWT_SECRET!) as { userId: string };
+      return jwt.verify(token, process.env.JWT_SECRET!) as {
+        userId: string;
+        role: string;
+      };
     } catch (error) {
       logger.error("Error verifying access token:", error);
       throw new Error("Invalid access token");
@@ -66,6 +73,7 @@ class TokenService {
       logger.info("Verifying refresh token");
       const decoded = jwt.verify(token, process.env.REFRESH_TOKEN_SECRET!) as {
         userId: string;
+        role: string;
       };
 
       // Check if refresh token exists in Redis

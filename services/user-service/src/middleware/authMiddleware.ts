@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import logger from "../utils/logger";
 interface AuthenticatedRequest extends Request {
-  user?: { id: string };
+  user?: { id: string; role: string };
 }
 
 export const requireAuth = (
@@ -9,13 +9,17 @@ export const requireAuth = (
   res: Response,
   next: NextFunction
 ): void => {
+  logger.info("User service auth hit");
   const userId = req.headers["x-user-id"] as string;
+  const role = req.headers["x-user-role"] as string;
 
-  if (!userId) {
-    res.status(401).json({ message: "Unauthorized - user not found" });
+  if (!userId || !role) {
+    res.status(401).json({
+      message: "Unauthorized - missing user information",
+    });
     return;
   }
 
-  req.user = { id: userId };
+  req.user = { id: userId, role };
   next();
 };

@@ -2,6 +2,18 @@ import { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
 import logger from "../utils/logger";
 
+declare global {
+  namespace Express {
+    interface Request {
+      user?: {
+        id: string;
+        role: string;
+        [key: string]: any;
+      };
+    }
+  }
+}
+
 const validateToken = (req: Request, res: Response, next: NextFunction) => {
   logger.info("Validating token in api gateway middleware");
 
@@ -14,7 +26,11 @@ const validateToken = (req: Request, res: Response, next: NextFunction) => {
   const token = authHeader.split(" ")[1];
   try {
     logger.info("Verifying token");
-    const decoded = jwt.verify(token, process.env.JWT_SECRET as string);
+    const decoded = jwt.verify(token, process.env.JWT_SECRET as string) as {
+      id: string;
+      role: string;
+      [key: string]: any;
+    };
 
     // @ts-ignore: Add user to request object
 

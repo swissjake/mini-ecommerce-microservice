@@ -8,13 +8,18 @@ import { apiRateLimiter } from "./middleware/rateLimiter";
 import cors from "cors";
 import { errorHandler } from "./middleware/errorHandler";
 import { Request, Response, NextFunction } from "express";
+import { specs } from "./config/swagger";
+import swaggerUi from "swagger-ui-express";
+import { checkRole } from "./middleware/checkRole";
 dotenv.config();
 
 declare global {
   namespace Express {
     interface Request {
-      user: {
-        userId: string;
+      user?: {
+        id: string;
+        role: string;
+        [key: string]: any;
       };
     }
   }
@@ -26,6 +31,9 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(apiRateLimiter);
+
+// Swagger UI
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(specs));
 
 const proxyOptions = {
   proxyReqPathResolver: (req: Request) => {
@@ -70,7 +78,73 @@ app.use(
       (proxyReqOpts.headers as Record<string, string>)["content-type"] =
         "application/json";
       (proxyReqOpts.headers as Record<string, string>)["x-user-id"] =
-        srcReq.user.userId;
+        srcReq.user?.userId || "";
+      (proxyReqOpts.headers as Record<string, string>)["x-user-role"] =
+        srcReq.user?.role || "";
+      return proxyReqOpts;
+    },
+    userResDecorator: (proxyRes, proxyResData, userReq, userRes) => {
+      return proxyResData;
+    },
+  })
+);
+
+app.use(
+  "/v1/orders",
+  validateToken,
+  proxy(process.env.ORDER_SERVICE_URL || "", {
+    ...proxyOptions,
+    proxyReqOptDecorator: (proxyReqOpts, srcReq) => {
+      (proxyReqOpts.headers as Record<string, string>)["content-type"] =
+        "application/json";
+      (proxyReqOpts.headers as Record<string, string>)["x-user-id"] =
+        srcReq.user?.id || "";
+      (proxyReqOpts.headers as Record<string, string>)["x-user-role"] =
+        srcReq.user?.role || "";
+
+      return proxyReqOpts;
+    },
+    userResDecorator: (proxyRes, proxyResData, userReq, userRes) => {
+      return proxyResData;
+    },
+  })
+);
+
+app.use(
+  "/v1/products",
+  validateToken,
+  proxy(process.env.PRODUCT_SERVICE_URL || "", {
+    ...proxyOptions,
+    proxyReqOptDecorator: (proxyReqOpts, srcReq) => {
+      (proxyReqOpts.headers as Record<string, string>)["content-type"] =
+        "application/json";
+      (proxyReqOpts.headers as Record<string, string>)["x-user-id"] =
+        srcReq.user?.id || "";
+      (proxyReqOpts.headers as Record<string, string>)["x-user-role"] =
+        srcReq.user?.role || "";
+
+      return proxyReqOpts;
+    },
+    userResDecorator: (proxyRes, proxyResData, userReq, userRes) => {
+      return proxyResData;
+    },
+  })
+);
+
+app.use(
+  "/v1/admin/products",
+  validateToken,
+  checkRole(["ADMIN"]),
+  proxy(process.env.PRODUCT_SERVICE_URL || "", {
+    ...proxyOptions,
+    proxyReqOptDecorator: (proxyReqOpts, srcReq) => {
+      (proxyReqOpts.headers as Record<string, string>)["content-type"] =
+        "application/json";
+      (proxyReqOpts.headers as Record<string, string>)["x-user-id"] =
+        srcReq.user?.id || "";
+      (proxyReqOpts.headers as Record<string, string>)["x-user-role"] =
+        srcReq.user?.role || "";
+
       return proxyReqOpts;
     },
     userResDecorator: (proxyRes, proxyResData, userReq, userRes) => {

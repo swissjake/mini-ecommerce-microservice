@@ -7,3 +7,8 @@ cart-db/
 order-db/
 payment-db/
 *.rest
+postgres/
+# PostgreSQL data
+postgres/**/base/
+postgres/**/pg_wal/
+postgres/**/pg_xact/
