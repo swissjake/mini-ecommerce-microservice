@@ -155,6 +155,19 @@ services:
       POSTGRES_PASSWORD: password
       POSTGRES_DB: products
 
+  notification-db:
+    image: postgres:15
+    container_name: notification-db
+    restart: always
+    ports:
+      - "5445:5432"
+    volumes:
+      - ./postgres/notification-db:/var/lib/postgresql/data
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: notifications
+
   redis:
     image: redis:7
     container_name: redis
