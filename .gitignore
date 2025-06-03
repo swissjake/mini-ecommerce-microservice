@@ -15,3 +15,4 @@ postgres/**/pg_xact/
 postgres/**/pg_multixact/
 postgres/**/pg_subtrans/
 postgres/**/pg_twophase/
+.vscode/
